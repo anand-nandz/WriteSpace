@@ -178,8 +178,8 @@ export default function Blogs() {
 
           <div
             ref={scrollContainerRef}
-            className="flex space-x-4 overflow-x-hidden scroll-smooth py-4 px-8"
-          >
+            className="flex space-x-4 overflow-x-auto scrollbar-hide scroll-smooth py-4 px-8 snap-x snap-mandatory"
+            >
             {Object.values(BlogCategories).map((service) => (
               <Button
                 key={service}

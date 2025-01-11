@@ -19,6 +19,7 @@ import UserProfile from './pages/UserProfile'
 import Blogs from './pages/blogs'
 import AllBlogsv from './pages/AllBlogsv'
 import AboutPage from './pages/AboutPage'
+import ResetPassword from './pages/ResetPassword'
 // 
 
 const App: React.FC = () => {
@@ -38,6 +39,8 @@ const App: React.FC = () => {
               <Route path={USER.SIGNUP} element={<ErrorBoundary><SignUp /></ErrorBoundary>} />
               <Route path={USER.VERIFY} element={<ErrorBoundary><VerifyOtp /></ErrorBoundary>} />
               <Route path={USER.ALL_BLOG} element={<ErrorBoundary><AllBlogsv /></ErrorBoundary>} />
+              <Route path={USER.FORGOT_PWDMAIL} element={<ResetPassword />} />
+
 
             </Route>
 

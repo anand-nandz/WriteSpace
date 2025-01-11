@@ -8,5 +8,7 @@ export const USER ={
     LANDINGPAGE: '/',
     BLOGS: '/blogs',
     CREATE_BLOG: '/create-blogs',
-    ALL_BLOG: '/all-blogs'
+    ALL_BLOG: '/all-blogs',
+    FORGOT_PWDMAIL: "/forgot-password/:token",
+
 }

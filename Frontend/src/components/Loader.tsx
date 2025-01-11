@@ -16,7 +16,7 @@ const Loader  : React.FC = () => {
           colors={['#000000', '#000000']} 
         />
       </div>
-      <h1 className=" mt-4 text-3xl font-bold text-black">CaptureCrew</h1>
+      <h1 className=" mt-4 text-3xl font-bold text-black">WriteSpace</h1>
     </div>
   );
 };

@@ -1,12 +1,10 @@
-
 import { Modal, ModalContent, ModalBody, ModalHeader } from "@nextui-org/modal"
 import { Image } from "@nextui-org/image"
 import { Link } from "@nextui-org/link"
 import { Divider } from "@nextui-org/divider"
 import { Avatar } from "@nextui-org/avatar"
-import { Facebook, Instagram, Mail,} from 'lucide-react'
+import { Facebook, Instagram, Mail } from 'lucide-react'
 import { BlogModalProps } from "../../utils/interfaces/interfaces"
-
 
 export default function BlogModal({
     isOpen,
@@ -32,14 +30,11 @@ export default function BlogModal({
             size="full"
             scrollBehavior="inside"
             closeButton='text-lg'
-            
         >
             <ModalContent className="overflow-hidden">
-                <ModalHeader className="flex justify-end p-4">
-                   
-                </ModalHeader>
+                <ModalHeader className="flex justify-end p-4" />
                 <ModalBody className="p-0">
-                    <div className="relative h-[400px]">
+                    <div className="relative h-[300px] sm:h-[400px]">
                         <Image
                             removeWrapper
                             alt={title}
@@ -57,18 +52,19 @@ export default function BlogModal({
 
                     <div className="px-4 sm:px-8 py-6">
                         <div className="grid grid-cols-1 sm:grid-cols-[minmax(160px,200px)_1fr] gap-8">
-                            <div>
+                            {/* Author Card - Now with better mobile spacing */}
+                            <div className="bg-gray-50 p-4 rounded-lg">
                                 <div className="text-center">
                                     <Avatar
                                         src={author.image}
-                                        className="w-20 h-20 mx-auto mb-3"
+                                        className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3"
                                         alt={author.name}
                                     />
-                                    <h3 className="font-medium text-lg">{author.name}</h3>
-                                    <p className="text-sm text-gray-500">Blog Author</p>
+                                    <h3 className="font-medium text-lg mb-1">{author.name}</h3>
+                                    <p className="text-sm text-gray-500 mb-3">Blog Author</p>
                                 </div>
 
-                                <div className="flex justify-center gap-4 mt-4">
+                                <div className="flex justify-center gap-4 mb-4">
                                     <Link href={`mailto:${author.email}`} className="text-gray-400 hover:text-gray-600">
                                         <Mail className="w-4 h-4" />
                                     </Link>
@@ -82,9 +78,9 @@ export default function BlogModal({
 
                                 <Divider className="my-4" />
 
-                                <div className="text-center text-sm text-gray-500">
+                                <div className="text-center text-sm text-gray-500 space-y-1">
                                     <p>{author.contactinfo}</p>
-                                    <p>{author.email}</p>
+                                    <p className="break-all">{author.email}</p>
                                 </div>
 
                                 <div className="text-center mt-4">
@@ -94,14 +90,17 @@ export default function BlogModal({
                                 </div>
                             </div>
 
+                            {/* Content Section - Now with better paragraph formatting */}
                             <div className="min-w-0">
-                                <h1 className="text-4xl font-serif mb-2 break-words">{title}</h1>
+                                <h1 className="text-2xl sm:text-4xl font-serif mb-2 break-words">{title}</h1>
                                 {date && (
                                     <time className="text-sm text-gray-500 block mb-4">{date}</time>
                                 )}
-                                <p className="text-gray-600 leading-relaxed break-words">
-                                    {excerpt}
-                                </p>
+                                <div className="space-y-4 text-gray-600 leading-relaxed">
+                                    <p className="text-gray-600 leading-relaxed break-words">
+                                        {excerpt}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

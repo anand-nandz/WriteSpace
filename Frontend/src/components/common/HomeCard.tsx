@@ -4,7 +4,7 @@ const HomeCard = () => {
     return (
         <>
             {/* Quote Section */}
-            <div className="grid md:grid-cols-2 gap-8 mb-16">
+            <div className="grid md:grid-cols-2 gap-8 mb-16 px-3">
                 <div className="space-y-4">
                     <p className="text-3xl font-serif italic leading-snug text-black">
                         "Every story deserves a space to breathe, every writer deserves a place to belong."
@@ -27,7 +27,7 @@ const HomeCard = () => {
 
             <Divider className="my-16" />
 
-            <div className="grid md:grid-cols-2 gap-8 mb-16">
+            <div className="grid md:grid-cols-2 gap-8 mb-16 px-3">
                 <div className="justify-center">
                     <img
                         alt="Community gathering of writers"

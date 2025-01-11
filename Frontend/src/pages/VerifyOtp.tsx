@@ -12,33 +12,33 @@ import { axiosInstance } from '../config/api/axiosInstance';
 const VerifyOtp = () => {
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [resendDisabled, setResendDisabled] = useState(false);
     const navigate = useNavigate();
 
 
     useEffect(() => {
         const otpData = localStorage.getItem('otpData');
+        console.log(otpData,'data');
+        
         if (!otpData) {
             navigate('/signup');
             return;
         }
 
-        const { otpExpiry, resendAvailableAt } = JSON.parse(otpData);
+        const { otpExpiry } = JSON.parse(otpData);
 
         const startTimer = () => {
             const now = Date.now();
             if (otpExpiry > now) {
                 setTimeLeft(Math.floor((otpExpiry - now) / 1000));
-                setResendDisabled(resendAvailableAt > now);
 
                 const interval = setInterval(() => {
                     const currentTime = Date.now();
                     if (otpExpiry > currentTime) {
                         setTimeLeft(Math.floor((otpExpiry - currentTime) / 1000));
-                        setResendDisabled(resendAvailableAt > currentTime);
                     } else {
                         setTimeLeft(0);
-                        setResendDisabled(false);
+                        localStorage.removeItem('otpData')
+                        navigate('/signup');
                         clearInterval(interval);
                     }
                 }, 1000);
@@ -46,7 +46,7 @@ const VerifyOtp = () => {
                 return () => clearInterval(interval);
             } else {
                 setTimeLeft(0);
-                setResendDisabled(false);
+                localStorage.removeItem('otpData')
             }
         };
 
@@ -57,6 +57,12 @@ const VerifyOtp = () => {
     const handleVerify = async (values: OtpFormValues, { setSubmitting, setFieldError }: FormikHelpers<OtpFormValues>) => {
         setIsLoading(true);
         try {
+            const otpData = localStorage.getItem('otpData');
+            
+            if (!otpData) {
+                navigate('/signup');
+                return;
+            }
             const response = await axiosInstance.post('/verifyOtp', { otp: values.otp });
             showToastMessage(response.data.message, 'success');
             if (response.data.user) {
@@ -82,41 +88,6 @@ const VerifyOtp = () => {
         }
 
     }
-
-
-    const handleResend = async () => {
-        if (resendDisabled) return;
-
-        setIsLoading(true);
-        try {
-            const response = await axiosInstance.get('/verifyOt');
-            const { otpExpiry, resendAvailableAt } = response.data;
-
-            const otpData = JSON.parse(localStorage.getItem('otpData') || '{}');
-            localStorage.setItem('otpData', JSON.stringify({
-                ...otpData,
-                otpExpiry,
-                resendAvailableAt
-            }));
-            showToastMessage(response.data.message, 'success');
-            setTimeLeft(Math.floor((otpExpiry - Date.now()) / 1000));
-            setResendDisabled(true);
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                const errorMessage = error.response?.data?.message ||
-                    error.response?.data?.error ||
-                    error.message ||
-                    'An error occurred while processing your request';
-                showToastMessage(errorMessage, 'error');
-            } else {
-                console.error('Failed to resend OTP:', error);
-                showToastMessage('An unexpected error occurred. Please try again.', 'error');
-            }
-
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -178,16 +149,6 @@ const VerifyOtp = () => {
 
 
                                         <div className='flex justify-between gap-4'>
-                                            <Button
-                                                type="button"
-                                                onClick={handleResend}
-                                                disabled={isLoading || resendDisabled || isSubmitting}
-                                                className="bg-gray-900 text-white"
-                                                fullWidth
-                                            >
-                                                {isLoading ? "Sending..." : "Resend OTP"}
-                                            </Button>
-
                                             <Button
                                                 type="submit"
                                                 disabled={isLoading || !timeLeft || timeLeft === 0 || isSubmitting}

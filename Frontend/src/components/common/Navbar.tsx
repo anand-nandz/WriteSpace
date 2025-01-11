@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     Navbar,
@@ -12,6 +12,10 @@ import {
     DropdownMenu,
     DropdownItem,
     Avatar,
+    NavbarMenuToggle,
+    NavbarMenu,
+    NavbarMenuItem,
+    Image,
 } from "@nextui-org/react";
 import { USER } from "../../utils/constants/constants";
 import UserRootState from "../../redux/rootstate/UserState";
@@ -20,21 +24,22 @@ import { showToastMessage } from "../../utils/toast";
 import { axiosInstance } from "../../config/api/axiosInstance";
 import { logout } from '../../redux/slices/UserSlice';
 import { ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const WriteSpaceLogo: React.FC = () => (
-    <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
-        <path
-            clipRule="evenodd"
-            d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-            fill="currentColor"
-            fillRule="evenodd"
-        />
-    </svg>
+    <Image
+        src="/images/login.png"
+        alt="WriteSpace Logo"
+        width={36}
+        height={36}
+        className="cursor-pointer"
+    />
 );
 
 export function WritSpaceNavbar() {
     const user = useSelector((state: UserRootState) => state.user.userData);
     const isAuthenticated = useSelector((state: UserRootState) => state.user.isUserSignedIn);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -52,14 +57,28 @@ export function WritSpaceNavbar() {
         }
     };
 
-
     return (
-        <Navbar maxWidth="full" className="bg-[#1a1a1a]">
+        <Navbar
+            maxWidth="full"
+            className="bg-[#1a1a1a]"
+            isMenuOpen={isMenuOpen}
+            onMenuOpenChange={setIsMenuOpen}
+        >
+            {/* Menu Toggle for Mobile */}
+            {isAuthenticated && (
+                <NavbarContent className="sm:hidden" justify="start">
+                    <NavbarMenuToggle
+                        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                        className="text-white"
+                    />
+                </NavbarContent>
+            )}
             <NavbarBrand>
                 <WriteSpaceLogo />
-                <p className="font-bold text-inherit text-white">WriteSpace</p>
+                <Link to={USER.HOME}> <p className="font-bold text-inherit text-white">WriteSpace</p></Link>
             </NavbarBrand>
 
+            {/* Desktop Navigation */}
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 {isAuthenticated && (
                     <>
@@ -84,7 +103,7 @@ export function WritSpaceNavbar() {
                                 <DropdownItem key="all-blogs" onPress={() => navigate(USER.ALL_BLOG)}>
                                     All Blogs
                                 </DropdownItem>
-                                <DropdownItem key="all-blogs" onPress={() => navigate(USER.BLOGS)}>
+                                <DropdownItem key="my-blogs" onPress={() => navigate(USER.BLOGS)}>
                                     My Blogs
                                 </DropdownItem>
                                 <DropdownItem key="create-blog" onPress={() => navigate(USER.CREATE_BLOG)}>
@@ -92,7 +111,6 @@ export function WritSpaceNavbar() {
                                 </DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
-
                         <NavbarItem>
                             <NextUILink href={USER.ABOUT_US} className="text-white text-lg font-medium">
                                 About Us
@@ -102,7 +120,56 @@ export function WritSpaceNavbar() {
                 )}
             </NavbarContent>
 
+            {/* Mobile Menu */}
+            <NavbarMenu className="bg-[#1a1a1a] pt-6">
+                {isAuthenticated && (
+                    <>
+                        <NavbarMenuItem>
+                            <NextUILink
+                                href={USER.HOME}
+                                className="w-full text-white text-lg py-2"
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                Home
+                            </NextUILink>
+                        </NavbarMenuItem>
+                        <NavbarMenuItem className="flex flex-col gap-2">
+                            <NextUILink
+                                href={USER.ALL_BLOG}
+                                className="w-full text-white text-lg py-2"
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                All Blogs
+                            </NextUILink>
+                            <NextUILink
+                                href={USER.BLOGS}
+                                className="w-full text-white text-lg py-2"
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                My Blogs
+                            </NextUILink>
+                            <NextUILink
+                                href={USER.CREATE_BLOG}
+                                className="w-full text-white text-lg py-2"
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                Create Blog
+                            </NextUILink>
+                        </NavbarMenuItem>
+                        <NavbarMenuItem>
+                            <NextUILink
+                                href={USER.ABOUT_US}
+                                className="w-full text-white text-lg py-2"
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                About Us
+                            </NextUILink>
+                        </NavbarMenuItem>
+                    </>
+                )}
+            </NavbarMenu>
 
+            {/* User Profile Section */}
             <NavbarContent justify="end">
                 {isAuthenticated ? (
                     <Dropdown placement="bottom-end">
@@ -152,4 +219,3 @@ export function WritSpaceNavbar() {
         </Navbar>
     );
 }
-

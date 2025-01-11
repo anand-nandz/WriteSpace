@@ -24,7 +24,7 @@ const SignUp = () => {
     } = useSignup()
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5] py-2 px-4">
-          <Card className="w-full max-w-[1000px] md:p-6 bg-white shadow-xl">
+          <Card className="w-full max-w-[1000px] md:p-6 bg-white shadow-xl p-4 ">
             <div className="flex flex-col md:flex-row">
               {/* Left Side - Image */}
               <div className="hidden md:flex flex-1 relative min-h-[300px] md:min-h-[500px] rounded-2xl overflow-hidden">
@@ -41,7 +41,7 @@ const SignUp = () => {
                 <h1 className="text-2xl text-center font-semibold mb-4 text-[#333]">
                   Sign Up
                 </h1>
-                <form onSubmit={submitHandler} className="space-y-4">
+                <form onSubmit={submitHandler} className="space-y-5">
                   <div>
                     <Input
                       id="name"
@@ -58,7 +58,7 @@ const SignUp = () => {
                         base: "w-full",
                         mainWrapper: "w-full",
                         input: "bg-transparent",
-                        inputWrapper: "border-gray-300",
+                        inputWrapper: "border-gray-300 h-14",
                       }}
                     />
                   </div>
@@ -79,7 +79,7 @@ const SignUp = () => {
                         base: "w-full",
                         mainWrapper: "w-full",
                         input: "bg-transparent",
-                        inputWrapper: "border-gray-300",
+                        inputWrapper: "border-gray-300 h-14",
                       }}
                     />
                   </div>
@@ -100,7 +100,7 @@ const SignUp = () => {
                         base: "w-full",
                         mainWrapper: "w-full",
                         input: "bg-transparent",
-                        inputWrapper: "border-gray-300",
+                        inputWrapper: "border-gray-300 h-14 ",
                       }}
                     />
                   </div>
@@ -119,7 +119,7 @@ const SignUp = () => {
                       errorMessage={formErrors.password}
                       endContent={
                         <button
-                          className="focus:outline-none"
+                          className="focus:outline-none "
                           type="button"
                           onClick={togglePasswordVisibility1}
                         >
@@ -130,7 +130,7 @@ const SignUp = () => {
                         base: "w-full",
                         mainWrapper: "w-full",
                         input: "bg-transparent",
-                        inputWrapper: "border-gray-300",
+                        inputWrapper: "border-gray-300 h-14",
                       }}
                     />
                   </div>
@@ -160,7 +160,7 @@ const SignUp = () => {
                         base: "w-full",
                         mainWrapper: "w-full",
                         input: "bg-transparent",
-                        inputWrapper: "border-gray-300",
+                        inputWrapper: "border-gray-300 h-14",
                       }}
                     />
                   </div>
@@ -190,6 +190,12 @@ const SignUp = () => {
                     <Link href={USER.LOGIN} className="text-gray-800 font-semibold">
                       Login
                     </Link>
+                    <div>
+                        <Link href={USER.LANDINGPAGE} className="text-black">
+                            <h2 className="font-bold text-inherit text-black text-center">Explore WriteSpace</h2>
+                        </Link>
+
+                    </div>
                   </div>
                 </CardFooter>
               </div>

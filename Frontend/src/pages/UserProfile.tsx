@@ -20,19 +20,19 @@ const UserProfile = () => {
     const dispatch = useDispatch();
     const user = useSelector((state: UserRootState) => state.user.userData);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const getPro = async()=>{
+    const getPro = async () => {
         await axiosInstance.get('/profile', {
             withCredentials: true,
-           
+
         });
     }
-    useEffect(()=>{
-      getPro()
-    },[])
+    useEffect(() => {
+        getPro()
+    }, [])
 
     const handleSaveProfile = useCallback(async (updates: FormData) => {
         try {
-            
+
             const token = localStorage.getItem('userToken');
             if (!token) {
                 showToastMessage('Authentication required', 'error');
@@ -76,23 +76,25 @@ const UserProfile = () => {
                                 transition={{ delay: 0.2, duration: 0.5 }}
                                 className="flex flex-col justify-between items-start "
                             >
-                                <div className="flex items-center gap-6">
+                                <div className="flex flex-col md:flex-row items-start md:items-center gap-6 w-full md:w-auto">
                                     <Avatar
                                         size="xxl"
                                         placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}
                                         className="h-32 w-32 ring-4 ring-white -mt-20 relative"
                                         src={user?.image || "/images/user.png"}
                                     />
-                                    <div className="space-y-1">
+                                    <div className="space-y-2 max-w-full">
                                         <Typography variant="h4" className="text-2xl font-bold text-black" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                                             {user?.name}
                                         </Typography>
-                                        <div className="flex items-center gap-2">
-                                            <Mail className="h-4 w-4 text-black" />
-                                            <Typography className="text-gray-600" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                                        <div className="flex items-center gap-2 break-all">
+                                            <Mail className="h-4 w-4 flex-shrink-0 text-black" />
+                                            <Typography className="text-gray-600 break-all" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                                                 {user?.email}
                                             </Typography>
                                         </div>
+
+
                                         <div className="flex items-center gap-2">
                                             <Phone className="h-4 w-4 text-black" />
                                             <Typography className="text-gray-600" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
@@ -122,39 +124,39 @@ const UserProfile = () => {
                         <div className="px-6 pb-6 rounded-none">
                             <div className=" gap-4">
                                 <Card className="p-4 bg-gray-50" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                                <Typography variant="h6" className="text-center mb-6" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                                    Account Information
-                                </Typography>
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                    <div className="flex items-center gap-2">
-                                        <Badge className="h-4 w-4" />
-                                        <Typography className="text-sm text-gray-600" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                                            ID: {user?._id?.slice(-6)}
-                                        </Typography>
+                                    <Typography variant="h6" className="text-center mb-6" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                                        Account Information
+                                    </Typography>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        <div className="flex items-center gap-2">
+                                            <Badge className="h-4 w-4" />
+                                            <Typography className="text-sm text-gray-600" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                                                ID: {user?._id?.slice(-6)}
+                                            </Typography>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Clock className="h-4 w-4" />
+                                            <Typography className="text-sm text-gray-600" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
+                                                Joined: {formatDate(user?.createdAt)}
+                                            </Typography>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Button
+                                                size="sm"
+                                                placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}
+                                                onClick={() => setIsEditModalOpen(true)}
+                                                className="flex items-center gap-2 bg-black"
+                                            >
+                                                Edit Profile
+                                            </Button>
+
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <Clock className="h-4 w-4" />
-                                        <Typography className="text-sm text-gray-600" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                                            Joined: {formatDate(user?.createdAt)}
-                                        </Typography>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                <Button
-                                    size="sm"
-                                    placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}
-                                    onClick={() => setIsEditModalOpen(true)}
-                                    className="flex items-center gap-2 bg-black"
-                                >
-                                    Edit Profile
-                                </Button>
+                                </Card>
 
                             </div>
-                                </div>
-                            </Card>
 
-                            </div>
 
-                           
                         </div>
                     </Card>
                 </div>

@@ -383,12 +383,17 @@ export default function CreateBlog({
 
                                     <Textarea
                                         label="Description"
-                                        placeholder="Enter your description"
+                                        placeholder="Enter your description. Press Enter for new paragraphs."
                                         value={formData.description}
                                         onChange={(e) => handleInputChange('description', e.target.value)}
                                         errorMessage={errors.description}
                                         isInvalid={!!errors.description}
                                         isRequired
+                                        classNames={{
+                                            base: "max-w-full",
+                                            input: "resize-y min-h-[100px]"
+                                        }}
+                                        description="Use Enter key to create new paragraphs for better readability"
                                     />
 
                                 </div>

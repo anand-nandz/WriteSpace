@@ -125,7 +125,16 @@ export enum BlogStatus {
   Delete = 'Deleted'
 }
 
+export interface ErrorResponse {
+  message?: string;
+  error?: string;
+}
 
+
+export interface ResetFormValues {
+  password: string;
+  confirmPassword: string;
+}
 
 export const toastStyles = `
 .Toastify__toast {
