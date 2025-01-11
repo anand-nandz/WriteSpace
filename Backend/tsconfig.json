@@ -7,7 +7,10 @@
     "target": "es6",
     "outDir": "./dist",
     "resolveJsonModule": true,
-    "strict": true
+    "strict": true,
+    "types": ["node"], 
+    "lib": ["es6", "dom", "esnext"], 
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "src/types/**/*.d.ts"],
   "exclude": ["node_modules"]
