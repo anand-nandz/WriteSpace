@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./node_modules/@types", "./src/types"],
     "esModuleInterop": true,
     "moduleResolution": "node",
     "module": "commonjs",
@@ -8,10 +7,17 @@
     "outDir": "./dist",
     "resolveJsonModule": true,
     "strict": true,
-    "types": ["node"], 
-    "lib": ["es6", "dom", "esnext"], 
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": ["es6", "dom", "esnext"],
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "types": ["node"],
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
   },
-  "include": ["src/**/*.ts", "src/types/**/*.d.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }
