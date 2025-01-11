@@ -1,14 +1,17 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "target": "ES2020",
+    "module": "CommonJS",
+    "lib": ["ES2020", "DOM"],
+    "strict": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "module": "commonjs",
-    "target": "es6",
-    "outDir": "./dist",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "strict": true
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
-  "include": ["src/**/*.ts", "src/types/**/*.d.ts"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }
