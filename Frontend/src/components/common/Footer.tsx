@@ -1,6 +1,7 @@
 import { Link } from "@nextui-org/link"
 import { Divider } from "@nextui-org/divider"
 import { Facebook, Twitter, Youtube, Phone } from 'lucide-react'
+import { USER } from "../../utils/constants/constants"
 
 export default function Footer() {
   return (
@@ -14,7 +15,7 @@ export default function Footer() {
 
           {/* Navigation */}
           <div className="flex gap-6">
-            <Link href="/aboutus" className="text-white hover:text-gray-300">
+            <Link href={USER.ABOUT_US} className="text-white hover:text-gray-300">
               About
             </Link>
             <Link href="/home" className="text-white hover:text-gray-300">
