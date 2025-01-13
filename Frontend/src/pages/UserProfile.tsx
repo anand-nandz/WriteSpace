@@ -65,7 +65,7 @@ const UserProfile = () => {
                             transition={{ duration: 0.5 }}
                             className="relative h-40 md:h-64 w-full overflow-hidden rounded-t-xl"
                         >
-                            <img src={"/images/cate2.jpg"} alt="Cover" className="w-full h-full object-cover" />
+                            <img src={"/images/writespace2.jpeg"} alt="Cover" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/20" />
                         </motion.div>
 
