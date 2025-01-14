@@ -81,7 +81,7 @@ const UserProfile = () => {
                                         size="xxl"
                                         placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}
                                         className="h-32 w-32 ring-4 ring-white -mt-20 relative"
-                                        src={user?.image || "/images/user.png"}
+                                        src={user?.image || "/images/userdefault.jpg"}
                                     />
                                     <div className="space-y-2 max-w-full">
                                         <Typography variant="h4" className="text-2xl font-bold text-black" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
