@@ -167,7 +167,6 @@ export default function CreateBlog({
                 return newFiles;
             });
 
-            // Create object URL for preview
             const imageUrl = URL.createObjectURL(croppedFile);
             setExistingImages(prev => {
                 const newImages = [...prev];
@@ -182,6 +181,36 @@ export default function CreateBlog({
             showToastMessage('Failed to process image. Please try again.', 'error');
         }
     };
+
+    // const handleSkipCrop = () => {
+    //     if (currentImageIndex === null || !cropperSrc) return;
+    
+    //     try {
+    //         const skippedFile = new File([cropperSrc], `original-image-${currentImageIndex}.jpg`, {
+    //             type: 'image/jpeg',
+    //         });
+    
+    //         setImageFiles((prev) => {
+    //             const newFiles = [...prev];
+    //             newFiles[currentImageIndex] = skippedFile;
+    //             return newFiles;
+    //         });
+    
+    //         const imageUrl = URL.createObjectURL(skippedFile);
+    //         setExistingImages((prev) => {
+    //             const newImages = [...prev];
+    //             newImages[currentImageIndex] = imageUrl;
+    //             return newImages;
+    //         });
+    
+    //         setCropperSrc(null);
+    //         setCurrentImageIndex(null);
+    //     } catch (error) {
+    //         console.error('Skip crop error:', error);
+    //         showToastMessage('Failed to skip crop. Please try again.', 'error');
+    //     }
+    // };
+    
 
 
 
@@ -398,54 +427,55 @@ export default function CreateBlog({
 
                                 </div>
 
+                                <div className='relative flex justify-center items-center'>
+                                    <div className="absolute justify-center  w-[300px] h-[300px]">
 
-                                <div className="grid grid-cols-2 gap-4 ">
+                                        {Array(1).fill(null).map((_, index) => (
+                                            <motion.div
+                                                key={index}
+                                                className="relative aspect-square cursor-pointer"
+                                                initial={{ opacity: 0, scale: 0.8 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ duration: 0.3 }}
+                                            >
+                                                {(existingImages[index] || imageFiles[index]) ? (
+                                                    <>
+                                                        <Image
+                                                            src={existingImages[index]}
+                                                            alt={`Image ${index + 1}`}
+                                                            className="w-full h-full object-cover rounded-lg"
+                                                        />
+                                                        <button
+                                                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center z-30 justify-center"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleRemoveImage(index);
+                                                            }}
+                                                        >
+                                                            <X size={12} />
+                                                        </button>
+                                                    </>
+                                                ) : (
+                                                    <label className="w-full h-full flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors">
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            className="hidden"
+                                                            onChange={(e) => handleImageUpload(e, index)}
+                                                        />
+                                                        <Plus size={24} className="text-gray-400" />
+                                                    </label>
+                                                )}
+                                            </motion.div>
+                                        ))}
+                                        {errors.images && (
+                                            <div className="text-red-500 text-sm mt-1">{errors.images}</div>
+                                        )}
 
-                                    {Array(2).fill(null).map((_, index) => (
-                                        <motion.div
-                                            key={index}
-                                            className="relative aspect-square cursor-pointer"
-                                            initial={{ opacity: 0, scale: 0.8 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ duration: 0.3 }}
-                                        >
-                                            {(existingImages[index] || imageFiles[index]) ? (
-                                                <>
-                                                    <Image
-                                                        src={existingImages[index]}
-                                                        alt={`Image ${index + 1}`}
-                                                        className="w-full h-full object-cover rounded-lg"
-                                                    />
-                                                    <button
-                                                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center z-30 justify-center"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleRemoveImage(index);
-                                                        }}
-                                                    >
-                                                        <X size={12} />
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <label className="w-full h-full flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors">
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        className="hidden"
-                                                        onChange={(e) => handleImageUpload(e, index)}
-                                                    />
-                                                    <Plus size={24} className="text-gray-400" />
-                                                </label>
-                                            )}
-                                        </motion.div>
-                                    ))}
-                                    {errors.images && (
-                                        <div className="text-red-500 text-sm mt-1">{errors.images}</div>
-                                    )}
-
+                                    </div>
                                 </div>
-
                             </div>
+
 
                             {cropperSrc && (
                                 <motion.div
@@ -473,9 +503,9 @@ export default function CreateBlog({
                                                 checkCrossOrigin={false}
                                             />
                                             <div className="flex justify-end mt-4 gap-2">
-                                                <Button className="bg-white border-spacing-2 border text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white" onClick={() => setCropperSrc(null)}>
+                                                {/* <Button className="bg-white border-spacing-2 border text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white" onClick={() => setCropperSrc(null)}>
                                                     Skip Crop
-                                                </Button>
+                                                </Button> */}
                                                 <Button className="bg-[#1a1a1a] text-white" onClick={handleCrop}>
                                                     Crop & Save
                                                 </Button>

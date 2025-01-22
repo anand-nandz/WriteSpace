@@ -58,7 +58,7 @@ export const blogValidationSchema = (isEditMode: boolean, existingPost?: BlogDat
 
                 // Validate minimum images
                 if (totalImages < 1) {
-                    return this.createError({ message: 'Please upload at least 1 images' });
+                    return this.createError({ message: 'Please upload an image' });
                 }
 
                 // Validate maximum images
