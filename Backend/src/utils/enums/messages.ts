@@ -19,6 +19,8 @@ export const Messages = {
         AUTHENTICATION_REQUIRED: 'Authentication required' ,
         NO_REFRESHTOKEN: 'No refresh token provided',
         REFRESHTOKEN_EXP: 'Refresh token expired',
+        PASSWORD_RESET_LINK: 'Password reset link sent to your email' ,
+        PASSWORD_RESET_SUCCESS: 'Password Reset Successfull',
 
 
     },
@@ -44,7 +46,10 @@ export const Messages = {
         TOKEN_NOT_VALID: 'Token is not valid',
         INVALID_PAYLOAD: 'Token payload is invalid',
         USER_ID_MISSING: 'User ID is missing',
-        BLOG_ID_MISSING: 'Blog ID is missing'
+        BLOG_ID_MISSING: 'Blog ID is missing',
+        EMAIL_REQUIRED: 'Email is Requiresd',
+        PASSWORD_REQUIRED: 'Password is required',
+
 
     }
 };

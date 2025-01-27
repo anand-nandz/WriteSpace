@@ -18,9 +18,9 @@ export const blogValidationSchema = Yup.object().shape({
 
     description: Yup.string()
         .required('Description is required')
-        .min(50, 'Description must be at least 50 characters')
-        .max(5000, 'Description must be less than 5000 characters')
-        .trim(),
+        .min(1000, 'Description must be at least 1000 characters')
+        .max(200000, 'Description must be less than 200000 characters')
+        ,
 });
 
 
