@@ -49,6 +49,8 @@ const App: React.FC = () => {
               <Route path={USER.PROFILE} element={<ErrorBoundary><UserProfile /></ErrorBoundary>} />
               <Route path={USER.BLOGS} element={<ErrorBoundary><Blogs /></ErrorBoundary>} />
               <Route path={USER.CREATE_BLOG} element={<ErrorBoundary><CreateBlog /></ErrorBoundary>} />
+              <Route path={USER.ABOUT_US} element={<ErrorBoundary><AboutPage /></ErrorBoundary>} />
+
 
             </Route>
 
