@@ -1,5 +1,5 @@
 import { createAccessToken, createRefreshToken } from "../config/jwt.config";
-import { ILoginResponse, User, UserRegistrationData, UserSignUpData } from "../interfaces/commonInterface";
+import { BlogCategories, ILoginResponse, User, UserRegistrationData, UserSignUpData } from "../interfaces/commonInterface";
 import { IUserRepository } from "../interfaces/repositoryInterface/user.Repository.Interface";
 import { IUserService } from "../interfaces/serviceInterface/user.Service.Interface";
 import { UserDocument } from "../models/userModel";
@@ -11,6 +11,12 @@ import generateOTP from "../utils/generateOtp";
 import bcrypt from 'bcrypt';
 import { s3Service } from "./s3Service";
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import { sendEmail } from "../utils/sendEmail";
+import { emailTemplates } from "../utils/emailTemplates";
+import mongoose from "mongoose";
+import { promptApi } from "./geminiApi";
+import { validate } from "../utils/promptValidation";
 
 class UserService implements IUserService {
     private userRepository: IUserRepository;
@@ -26,6 +32,11 @@ class UserService implements IUserService {
     }> => {
         try {
             const { name, email, password, contactinfo } = data;
+
+            const existingUser = await this.userRepository.findByEmail(email);
+            if (existingUser) {
+                throw new CustomError(Messages.Auth.EMAIL_ALREADY_EXISTS, HTTP_statusCode.BadRequest)
+            }
 
             const otpCode = await generateOTP(email);
             if (!otpCode) {
@@ -100,6 +111,100 @@ class UserService implements IUserService {
         }
     }
 
+    handleForgotPassword = async (email: string): Promise<void> => {
+        try {
+            const user = await this.userRepository.findByEmail(email)
+            if (!user) {
+                throw new CustomError('User not exists', HTTP_statusCode.NotFound);
+            }
+            const resetToken = crypto.randomBytes(20).toString('hex');
+            const resetTokenExpiry = new Date(Date.now() + 30 * 60 * 1000);
+
+            user.resetPasswordToken = resetToken;
+            user.resetPasswordExpires = resetTokenExpiry;
+            await user.save();
+
+
+            const resetUrl = `${process.env.FRONTEND_URL}/forgot-password/${resetToken}`
+
+            await sendEmail(
+                email,
+                'Password Reset Request',
+                emailTemplates.forgotPassword(user.name, resetUrl)
+            );
+            this.scheduleTokenCleanup(user._id, resetTokenExpiry)
+        } catch (error) {
+            console.error('Error in handleForgotPassword:', error);
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw new CustomError('Failed to process forgot password request', HTTP_statusCode.InternalServerError);
+        }
+    }
+
+    newPasswordChange = async (token: string, password: string): Promise<void> => {
+        try {
+            const user = await this.userRepository.findByToken(token);
+
+            if (!user) {
+                throw new CustomError('Invalid token', HTTP_statusCode.InternalServerError);
+            }
+            if (!user.resetPasswordExpires || new Date() > user.resetPasswordExpires) {
+                throw new CustomError('Password reset token has expired', HTTP_statusCode.InternalServerError);
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            let updateSuccess = await this.userRepository.UpdatePasswordAndClearToken(user._id, hashedPassword);
+
+            if (!updateSuccess) {
+                throw new CustomError('Failed to Update password', HTTP_statusCode.InternalServerError)
+            }
+
+            await sendEmail(
+                user.email,
+                'Password Reset Successful',
+                emailTemplates.ResetPasswordSuccess(user.name)
+            );
+
+        } catch (error) {
+            console.error('Error in newPasswordChange:', error);
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw new CustomError('Failed to password', HTTP_statusCode.InternalServerError);
+        }
+    }
+
+    validateToken = async (token: string): Promise<boolean> => {
+        try {
+            const user = await this.userRepository.findByToken(token)
+
+            if (!user) {
+                throw new CustomError('Invalid token', HTTP_statusCode.InternalServerError);
+            }
+            if (!user.resetPasswordExpires) {
+                throw new CustomError('No reset token expiry date found', HTTP_statusCode.InternalServerError);
+            }
+
+            const currentTime = new Date().getTime()
+            const tokenExpiry = new Date(user.resetPasswordExpires).getTime();
+
+            if (currentTime > tokenExpiry) {
+                await this.userRepository.clearResetToken(user._id)
+                return false;
+            }
+            return true;
+
+        } catch (error) {
+            console.error('Error in validateResetToken:', error);
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw new CustomError((error as Error).message || 'Failed to validate token', HTTP_statusCode.InternalServerError);
+        }
+    }
+
     signIn = async (email: string, password: string): Promise<ILoginResponse> => {
         try {
             const existingUser = await this.userRepository.findByEmail(email);
@@ -151,15 +256,15 @@ class UserService implements IUserService {
         }
     };
 
-    
+
     create_RefreshToken = async (refreshToken: string): Promise<string> => {
         try {
             const decodedToken = jwt.verify(
                 refreshToken,
                 process.env.JWT_REFRESH_SECRET_KEY!
-            ) as { _id: string }         
+            ) as { _id: string }
 
-            const accessToken = createAccessToken(decodedToken._id.toString())        
+            const accessToken = createAccessToken(decodedToken._id.toString())
             return accessToken;
 
         } catch (error) {
@@ -216,7 +321,7 @@ class UserService implements IUserService {
                 name?: string;
                 contactinfo?: string;
                 image?: string;
-            } = {};            
+            } = {};
 
             if (name && name !== user.name) {
                 updateData.name = name;
@@ -269,6 +374,33 @@ class UserService implements IUserService {
             }
             throw new CustomError("Failed to update profile.", HTTP_statusCode.InternalServerError);
         }
+    }
+
+
+    generatePrompt = async (prompt: string, category: BlogCategories): Promise<string> => {
+        try {
+            validate(prompt, category);
+            const content = await promptApi(prompt, category)
+            return content
+        } catch (error) {
+            console.error('Error while generating Prompt', error);
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw new CustomError('Failed to generatePrompt', HTTP_statusCode.InternalServerError);
+        }
+    }
+
+
+    private async scheduleTokenCleanup(userId: mongoose.Types.ObjectId, expiryTime: Date): Promise<void> {
+        const timeUntilExpiry = new Date(expiryTime).getTime() - Date.now();
+        setTimeout(async () => {
+            try {
+                await this.userRepository.clearResetToken(userId)
+            } catch (error) {
+                console.error('Error cleaning up expired token:', error);
+            }
+        }, timeUntilExpiry)
     }
 
 }
