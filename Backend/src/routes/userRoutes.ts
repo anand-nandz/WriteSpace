@@ -22,6 +22,9 @@ router.post('/logout',userController.userLogout.bind(userController));
 router.post('/signup',userController.userSignUp.bind(userController));
 router.post('/verifyOtp',userController.verifyOTP.bind(userController));
 
+router.post('/google/register',userController.googleSignUp.bind(userController))
+router.post('/google/login',userController.googleAuth.bind(userController))
+
 router.post('/refresh-token',userController.create_RefreshToken.bind(userController))
 
 router.post('/forgot-password',userController.forgotPassword.bind(userController))

@@ -98,7 +98,7 @@ const UserProfile = () => {
                                         <div className="flex items-center gap-2">
                                             <Phone className="h-4 w-4 text-black" />
                                             <Typography className="text-gray-600" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                                                {user?.contactinfo}
+                                                {user?.contactinfo || 'N/A'}
                                             </Typography>
                                         </div>
                                     </div>

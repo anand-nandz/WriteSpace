@@ -9,6 +9,8 @@ import { AuthenticatedRequest } from "../utils/userTypes";
 import { IBlogService } from "../interfaces/serviceInterface/blog.Service.Interface";
 import mongoose from "mongoose";
 import jwt from 'jsonwebtoken';
+import Jwt from "jsonwebtoken";
+import { GoogleUserData, IDecodedData } from "../interfaces/commonInterface";
 
 
 class UserController {
@@ -74,6 +76,81 @@ class UserController {
             handleError(res, error, 'verifyOTP')
         }
     };
+
+    googleSignUp = async (req: Request, res: Response): Promise<void> => {
+        try {
+
+            const token = req.body.credential
+            const decodedData = Jwt.decode(token) as IDecodedData;
+
+
+            if (!decodedData) {
+                throw new CustomError(Messages.Auth.INVALID_TOKEN, HTTP_statusCode.BadRequest);
+            }
+            const { name, email, sub: googleId }: IDecodedData = decodedData;
+
+            const user = await this.userService.googleSignup({ name, email, googleId });
+
+            if (user) {
+                res.status(HTTP_statusCode.OK).json({
+                    success: true,
+                    message: Messages.Auth.ACCOUNT_CREATED
+                }),
+                    user
+            }
+
+        } catch (error) {
+            handleError(res, error, 'googleSignUp')
+        }
+    }
+
+    googleAuth = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { credential } = req.body
+            const decodedToken = Jwt.decode(credential) as IDecodedData;
+
+            if (!decodedToken || !decodedToken.email) {
+                throw new CustomError('Invalid Google token', HTTP_statusCode.BadRequest)
+            }
+
+            const googleUserData: GoogleUserData = {
+                email: decodedToken.email,
+                name: decodedToken.name,
+                googleId: decodedToken.sub,
+                picture: decodedToken.picture
+            }
+
+            const { user, isNewUser, token, refreshToken } = await this.userService.authenticateGoogleLogin(googleUserData);
+            if (user.isActive) {
+
+                res.cookie('refreshToken', refreshToken, {
+                    httpOnly: true, secure: process.env.NODE_ENV === 'production',
+                    maxAge: 7 * 24 * 60 * 60 * 1000
+                })
+                res.status(HTTP_statusCode.OK).json({
+                    user,
+                    token,
+                    message: isNewUser
+                        ? 'Successfully signed up with Google'
+                        : 'Successfully logged in with Google'
+                });
+            } else {
+
+                res.cookie('refreshToken', refreshToken, {
+                    httpOnly: true, secure: process.env.NODE_ENV === 'production',
+                    maxAge: 7 * 24 * 60 * 60 * 1000
+                })
+                res.status(HTTP_statusCode.OK).json({
+                    user,
+                    token,
+                });
+            }
+
+
+        } catch (error) {
+            handleError(res, error, 'googleAuth')
+        }
+    }
 
     
 

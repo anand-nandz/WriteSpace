@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { showToastMessage } from "../utils/toast";
 import { axiosInstance } from "../config/api/axiosInstance";
 import axios from 'axios';
+import { CredentialResponse } from "@react-oauth/google";
+import { USER } from "../utils/constants/constants";
 
 const initialValues: UserFormValues = {
   email: "",
@@ -37,6 +39,20 @@ export const useSignup = () => {
   };
   const togglePasswordVisibility2 = () => {
     setShowPassword2(!showPassword2);
+  };
+  
+  const handleGoogleSuccess = (credentialResponse: CredentialResponse) => {
+    axiosInstance
+      .post('./google/register', { credential: credentialResponse.credential })
+      .then((res) => {
+        if (res.data.message) {
+          showToastMessage(res.data.message, 'success')
+          navigate(USER.LOGIN)
+        }
+      })
+      .catch((error) => {
+        showToastMessage(error.response?.data?.error || 'An error occurred during Google sign up', 'error')
+      })
   };
 
 
@@ -89,6 +105,7 @@ export const useSignup = () => {
     showPassword2,
     handleChange,
     submitHandler,
+    handleGoogleSuccess,
     togglePasswordVisibility1,
     togglePasswordVisibility2,
   }

@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useDisclosure } from "@nextui-org/react";
 import Swal from "sweetalert2";
 import axios, { AxiosError } from "axios";
+import { CredentialResponse } from '@react-oauth/google';
 
 const initialValues: LoginFormValues = {
     email: '',
@@ -33,14 +34,14 @@ export const useLogin = () => {
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
-    
+
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const email = e.target.value;
         setForgotPasswordEmail(email)
         const errors = validateEmail({ email });
         setEmailError(errors.email);
     }
-    
+
     const handleForgotPassword = async () => {
         try {
 
@@ -78,7 +79,7 @@ export const useLogin = () => {
                 showToastMessage("An unexpected error occurred", "error");
             }
         } finally {
-            setIsLoading(false); 
+            setIsLoading(false);
         }
     };
 
@@ -92,7 +93,7 @@ export const useLogin = () => {
                     .post('/login', values)
                     .then((response) => {
                         localStorage.setItem('userToken', response.data.token);
-                        dispatch(setUserInfo(response.data.user));                        
+                        dispatch(setUserInfo(response.data.user));
                         showToastMessage(response.data.message, 'success')
                         navigate(`${USER.HOME}`);
                     })
@@ -106,6 +107,21 @@ export const useLogin = () => {
 
         }
     })
+    const handleGoogleSuccess = (credentialResponse: CredentialResponse) => {
+        axiosInstance
+            .post('/google/login', { credential: credentialResponse.credential })
+            .then((response) => {
+                localStorage.setItem('userToken', response.data.token);
+                dispatch(setUserInfo(response.data.user));
+                showToastMessage(response.data.message, 'success')
+                navigate(USER.HOME);
+            })
+            .catch((error) => {
+                console.error(error);
+                showToastMessage(error.response?.data?.message || 'An error occurred during Google login', 'error')
+            });
+    };
+
     return {
         isOpen,
         isLoading,
@@ -117,6 +133,7 @@ export const useLogin = () => {
         onOpenChange,
         togglePasswordVisibility,
         handleForgotPassword,
+        handleGoogleSuccess,
         handleEmailChange
     }
 

@@ -8,6 +8,21 @@ export interface UserRegistrationData {
     contactinfo: string;
 }
 
+
+export interface IDecodedData {
+  name: string;
+  email: string;
+  picture?: string;
+  sub: string
+}
+
+export interface GoogleUserData {
+  email: string;
+  name: string;
+  googleId: string;
+  picture?: string;
+}
+
 export interface UserSignUpData {
     email: string;
     password: string;

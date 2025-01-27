@@ -1,5 +1,5 @@
 import { UserDocument } from "../../models/userModel";
-import { BlogCategories, ILoginResponse, User, UserRegistrationData, UserSignUpData } from "../commonInterface";
+import { BlogCategories, GoogleUserData, ILoginResponse, User, UserRegistrationData, UserSignUpData } from "../commonInterface";
 
 export interface IUserService{
     registerUser(data: UserRegistrationData): Promise<{
@@ -8,6 +8,8 @@ export interface IUserService{
         resendAvailableAt: number;
     }>;
     verifyOTP(userData: UserSignUpData, otp: string): Promise<User>;
+    googleSignup({ email, name, googleId }: GoogleUserData): Promise<object>;
+    authenticateGoogleLogin(userData: GoogleUserData): Promise<ILoginResponse>;
     signIn(email:string, password:string): Promise<ILoginResponse>;
     handleForgotPassword(email: string): Promise<void>;
     newPasswordChange(token: string, password: string): Promise<void>;

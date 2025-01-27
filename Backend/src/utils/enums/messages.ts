@@ -10,6 +10,7 @@ export const Messages = {
         USER_REG_FAILED: 'Failed to register User',
         OTP_EXPIRED: `The OTP has expired. Please request a new one.`,
         INVALID_OTP: `The provided OTP is invalid.`,
+        INVALID_TOKEN: 'Invalid Token',
         OTP_VERIFY_FAIL: `OTP verification failed`,
         EMAIL_ALREADY_EXISTS: `This email is already registered.`,
         USER_NOT_FOUND: `User not found. Please register.`,

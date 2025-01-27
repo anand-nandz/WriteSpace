@@ -1,5 +1,5 @@
 import { createAccessToken, createRefreshToken } from "../config/jwt.config";
-import { BlogCategories, ILoginResponse, User, UserRegistrationData, UserSignUpData } from "../interfaces/commonInterface";
+import { BlogCategories, GoogleUserData, ILoginResponse, User, UserRegistrationData, UserSignUpData } from "../interfaces/commonInterface";
 import { IUserRepository } from "../interfaces/repositoryInterface/user.Repository.Interface";
 import { IUserService } from "../interfaces/serviceInterface/user.Service.Interface";
 import { UserDocument } from "../models/userModel";
@@ -110,6 +110,97 @@ class UserService implements IUserService {
             throw new CustomError(Messages.Auth.OTP_VERIFY_FAIL, HTTP_statusCode.InternalServerError)
         }
     }
+
+
+    googleSignup = async ({ email, name, googleId }: GoogleUserData): Promise<object> => {
+        try {
+            const existingUser = await this.userRepository.findByEmail(email);
+
+            if (existingUser) {
+                if (existingUser.isGoogleUser) return { user: existingUser };
+                else {
+                    throw new CustomError('Email already registered with different method', HTTP_statusCode.InternalServerError);
+                }
+            }
+
+            const newUser = await this.userRepository.create({
+                email,
+                googleId,
+                name,
+                isActive: true,
+                isGoogleUser: true,
+            });
+            return { user: newUser }
+
+        } catch (error) {
+            console.error('Error in signup using google', error)
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw new CustomError('Failed to SignIn using Google', HTTP_statusCode.InternalServerError)
+        }
+    }
+
+    authenticateGoogleLogin = async (userData: GoogleUserData): Promise<ILoginResponse> => {
+        try {
+            const existingUser = await this.userRepository.findByEmail(userData.email);
+            let user: UserDocument;
+            let isNewUser = false;
+
+            if (existingUser) {
+                if (!existingUser.isGoogleUser) {
+                    existingUser.isGoogleUser = true;
+                    existingUser.googleId = userData.googleId;
+                    if (userData.picture) existingUser.image = userData.picture;
+                    user = await existingUser.save()
+                } else {
+                    user = existingUser;
+                }
+            } else {
+                user = await this.userRepository.create({
+                    email: userData.email,
+                    name: userData.name,
+                    googleId: userData.googleId,
+                    isGoogleUser: true,
+                    image: userData.picture,
+                    isActive: true
+                });
+                isNewUser = true;
+            }
+            let userWithSignedUrl = user.toObject();
+            if (user?.image) {
+                try {
+                    const signedImageUrl = await s3Service.getFile('write-space/profile/', existingUser?.image);
+
+                    userWithSignedUrl = {
+                        ...userWithSignedUrl,
+                        image: signedImageUrl
+                    };
+                } catch (error) {
+                    console.error('Error generating signed URL during Google login:', error);
+                }
+            }
+            
+            const token = createAccessToken(user._id.toString())
+            const refreshToken = createRefreshToken(user._id.toString())
+
+            return {
+                user: userWithSignedUrl,
+                isNewUser,
+                token,
+                refreshToken,
+                message: 'Google authenticate successfull'
+            };
+
+        } catch (error) {
+            console.error('Error in Google authentication:', error);
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw new CustomError('Failed to authenticate with Google', HTTP_statusCode.InternalServerError);
+        }
+    }
+
 
     handleForgotPassword = async (email: string): Promise<void> => {
         try {
