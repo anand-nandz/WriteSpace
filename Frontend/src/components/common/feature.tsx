@@ -8,22 +8,23 @@ const features = [
   {
     key: "blog",
     icon: <ChevronDown className="text-primary w-6 h-6" />,
-    title: "Blog beautifully",
-    content: "Customize your blog's look and feel in a couple of clicks with beautifully designed themes. Bring your writing to life with magical drag-and-drop layouts. Or put your fingerprint on every font, color, and element on the page."
+    title: "AI-Powered Blogging",
+    content: "Leverage the power of AI to help you create stunning blogs effortlessly. Get tailored suggestions, beautifully designed themes, and advanced customization options to make your blog uniquely yours."
   },
   {
     key: "edit",
     icon: <Edit className="text-primary w-6 h-6" />,
-    title: "Edit easily",
-    content: "Transform your thoughts into beautifully formatted posts with our intuitive editor. Add images, format text, and structure your content exactly how you want it. Writing has never been this seamless."
+    title: "Smart Editing Made Simple",
+    content: "Seamlessly edit your blogs with AI-assisted tools. Add images, format content, and structure your posts with precision. Let AI handle the details while you focus on your creativity."
   },
   {
     key: "share",
     icon: <Share className="text-primary w-6 h-6" />,
-    title: "Share anything, simply",
-    content: "Share your stories with the world effortlessly. Whether it's photos, thoughts, or creative works, our platform makes it simple to reach your audience and build your community."
+    title: "Effortless Sharing and Discovery",
+    content: "Share your blogs across platforms with just a click. Use advanced search and filtering options to find, categorize, and connect with the content and audience that matter most to you."
   }
-]
+];
+
 
 export default function FeatureSection() {
   return (
@@ -66,7 +67,6 @@ export default function FeatureSection() {
                 radius="lg"
               />
             </div>
-            {/* Decorative elements */}
             <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-primary/10 rounded-full blur-xl" />
             <div className="absolute -top-6 -right-6 w-32 h-32 bg-secondary/10 rounded-full blur-xl" />
           </div>

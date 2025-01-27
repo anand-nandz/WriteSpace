@@ -41,8 +41,8 @@ export const blogValidationSchema = (isEditMode: boolean, existingPost?: BlogDat
 
         description: Yup.string()
             .required('Description is required')
-            .min(100, 'Description must be at least 100 characters')
-            .max(50000, 'Description must be less than 50000 characters')
+            .min(1000, 'Description must be at least 1000 characters')
+            .max(200000, 'Description must be less than 200000 characters')
             ,
         images: Yup.array()
             .test('image-requirements', function (value) {

@@ -1,6 +1,6 @@
 import { Link } from "@nextui-org/link"
 import { Divider } from "@nextui-org/divider"
-import { Facebook, Twitter, Youtube, Phone } from 'lucide-react'
+import { Youtube, Phone, Instagram, Linkedin } from 'lucide-react'
 import { USER } from "../../utils/constants/constants"
 
 export default function Footer() {
@@ -28,13 +28,13 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center gap-6">
-            <Link href="#" className="text-white hover:text-gray-300">
-              <Facebook size={20} />
-              <span className="sr-only">Facebook</span>
+            <Link href={`https://www.linkedin.com/in/anand-pr-07b166217/`} className="text-white hover:text-gray-300">
+              <Linkedin size={20} />
+              <span className="sr-only">LinkedIn</span>
             </Link>
-            <Link href="#" className="text-white hover:text-gray-300">
-              <Twitter size={20} />
-              <span className="sr-only">Twitter</span>
+            <Link href={`https://www.instagram.com/anand_nandzz?igsh=M2x6MDZtM3JhbW9j`} className="text-white hover:text-gray-300">
+              <Instagram size={20} />
+              <span className="sr-only">Instagram</span>
             </Link>
             <Link href="#" className="text-white hover:text-gray-300">
               <Youtube size={20} />
@@ -51,7 +51,7 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-gray-400">
           <p>© 2025  All right reserved.</p>
-          <p>Support: capturecrew.connect@gmail.com</p>
+          <p>Support: writespace.connect@gmail.com</p>
         </div>
       </div>
     </footer>

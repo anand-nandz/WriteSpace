@@ -25,6 +25,7 @@ export default function Blogs() {
   const [selectedPostForEdit, setSelectedPostForEdit] = useState<BlogData | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const BLOGS_PER_PAGE = 3
+  const [blogStatus, setBlogStatus] = useState<BlogStatus | null>(null);
 
   useEffect(() => {
     fetchBlogs()
@@ -61,9 +62,19 @@ export default function Blogs() {
     }
   }
 
-  const filteredBlogs = selectedService === BlogCategories.ALL
-    ? blogs
-    : blogs.filter(blog => blog.category === selectedService); const totalBlogs = filteredBlogs.length;
+  const filteredBlogs = blogs
+    .filter(blog => {
+      // If no specific status filter, show only Published
+      if (!blogStatus) return blog.status === BlogStatus.Published;
+
+      // If status filter is set, match the specific status
+      return blog.status === blogStatus;
+    })
+    .filter(blog =>
+      selectedService === BlogCategories.ALL ? true : blog.category === selectedService
+    );
+
+  const totalBlogs = filteredBlogs.length;
 
   const totalPages = Math.max(1, Math.ceil(totalBlogs / BLOGS_PER_PAGE));
   const startIndex = (currentPage - 1) * BLOGS_PER_PAGE
@@ -104,7 +115,7 @@ export default function Blogs() {
       });
 
       if (!result.isConfirmed) {
-        return; 
+        return;
       }
 
       const response = await axiosInstance.patch(`/blogs/${blogId}/status`, {
@@ -164,6 +175,39 @@ export default function Blogs() {
           </Button>
         </div>
 
+        <div className="flex space-x-4 justify-center mb-4">
+          <Button
+            onClick={() => setBlogStatus(null)}
+            variant={blogStatus === null ? "solid" : "light"}
+            className={blogStatus === null
+              ? 'bg-black text-white'
+              : 'bg-white text-gray-600 hover:bg-gray-100'}
+            size="sm"
+          >
+            Published
+          </Button>
+          <Button
+            onClick={() => setBlogStatus(BlogStatus.Draft)}
+            variant={blogStatus === BlogStatus.Draft ? "solid" : "light"}
+            className={blogStatus === BlogStatus.Draft
+              ? 'bg-black text-white'
+              : 'bg-white text-gray-600 hover:bg-gray-100'}
+            size="sm"
+          >
+            Drafts
+          </Button>
+          <Button
+            onClick={() => setBlogStatus(BlogStatus.Archived)}
+            variant={blogStatus === BlogStatus.Archived ? "solid" : "light"}
+            className={blogStatus === BlogStatus.Archived
+              ? 'bg-black text-white'
+              : 'bg-white text-gray-600 hover:bg-gray-100'}
+            size="sm"
+          >
+            Archived
+          </Button>
+        </div>
+
         <div className="relative max-w-6xl mx-auto px-4">
           <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
             <Button
@@ -179,7 +223,7 @@ export default function Blogs() {
           <div
             ref={scrollContainerRef}
             className="flex space-x-4 overflow-x-auto scrollbar-hide scroll-smooth py-4 px-8 snap-x snap-mandatory"
-            >
+          >
             {Object.values(BlogCategories).map((service) => (
               <Button
                 key={service}
@@ -226,7 +270,7 @@ export default function Blogs() {
                 </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 px-6">
                 {currentBlogs.map((blog) => (
                   blog.status !== BlogStatus.Delete && (
                     <BlogCard
@@ -240,7 +284,7 @@ export default function Blogs() {
                       }) : undefined}
                       categories={[blog.category]}
                       excerpt={blog.description}
-                      blogId={blog._id}  // Changed from blog.blogId to blog._id
+                      blogId={blog._id}
                       onEditClick={() => handleEditClick(blog)}
                       onDelete={() => handleStatusChange(blog._id, BlogStatus.Delete)}
                       isAll={true}

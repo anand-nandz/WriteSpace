@@ -80,7 +80,7 @@ export default function AllBlogs() {
 
 
   const filteredBlogs = blogs
-    .filter(blog => blog.status !== BlogStatus.Delete)
+    .filter(blog => blog.status === BlogStatus.Published)
     .filter(blog =>
       selectedService === BlogCategories.ALL ? true : blog.category === selectedService
     );

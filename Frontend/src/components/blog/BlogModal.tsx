@@ -5,6 +5,7 @@ import { Divider } from "@nextui-org/divider"
 import { Avatar } from "@nextui-org/avatar"
 import { Facebook, Instagram, Mail } from 'lucide-react'
 import { BlogModalProps } from "../../utils/interfaces/interfaces"
+import React from "react"
 
 export default function BlogModal({
     isOpen,
@@ -52,7 +53,6 @@ export default function BlogModal({
 
                     <div className="px-4 sm:px-8 py-6">
                         <div className="grid grid-cols-1 sm:grid-cols-[minmax(160px,200px)_1fr] gap-8">
-                            {/* Author Card - Now with better mobile spacing */}
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <div className="text-center">
                                     <Avatar
@@ -90,16 +90,18 @@ export default function BlogModal({
                                 </div>
                             </div>
 
-                            {/* Content Section - Now with better paragraph formatting */}
                             <div className="min-w-0">
                                 <h1 className="text-2xl sm:text-4xl font-serif mb-2 break-words">{title}</h1>
                                 {date && (
                                     <time className="text-sm text-gray-500 block mb-4">{date}</time>
                                 )}
                                 <div className="space-y-4 text-gray-600 leading-relaxed">
-                                    <p className="text-gray-600 leading-relaxed break-words">
-                                        {excerpt}
-                                    </p>
+                                    <p>{excerpt?.split('\n').map((paragraph, index) => (
+                                            <React.Fragment key={index}>
+                                              {paragraph}
+                                              <br />
+                                            </React.Fragment>
+                                          ))}</p>
                                 </div>
                             </div>
                         </div>

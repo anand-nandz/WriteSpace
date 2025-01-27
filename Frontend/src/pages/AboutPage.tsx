@@ -8,12 +8,9 @@ export default function AboutPage() {
     return (
         <>
             <div className="max-w-[1200px] mx-auto px-4 py-16">
-                {/* Hero Section */}
                 <h1 className="text-6xl font-bold tracking-tighter mb-16">
                     ABOUT US.
                 </h1>
-
-                {/* About Text Section */}
                 <div className="grid md:grid-cols-[200px_1fr] gap-8 mb-16">
                     <div className="text-sm uppercase tracking-wide">
                         About us.
@@ -27,14 +24,11 @@ export default function AboutPage() {
                     </div>
                 </div>
 
-                {/* Work Image Section */}
                 <Card className="w-full mb-16 relative">
                     <CardBody className="p-0">
                         <div className="relative h-[500px]">
-                            {/* Gradient overlay */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10" />
 
-                            {/* Content */}
                             <div className="absolute bottom-8 left-8 z-20 text-white">
                                 <h1 className="text-5xl font-bold mb-4">WriteSpace</h1>
                                 <div className="space-y-2">
@@ -44,7 +38,7 @@ export default function AboutPage() {
                                             href="mailto: capturecrew.connect@gmail.com"
                                             className="hover:underline"
                                         >
-                                            capturecrew.connect@gmail.com
+                                            writespace.connect@gmail.com
                                         </a>
                                     </p>
                                 </div>

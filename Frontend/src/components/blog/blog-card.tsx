@@ -90,6 +90,7 @@ export function BlogCard({ image, title, date, categories, excerpt = '', onEditC
                     </Button>
                 )}
             </CardFooter>
+            
 
             <BlogModal
                 isOpen={isOpen}

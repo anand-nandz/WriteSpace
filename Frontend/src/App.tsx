@@ -20,7 +20,7 @@ import Blogs from './pages/blogs'
 import AllBlogsv from './pages/AllBlogsv'
 import AboutPage from './pages/AboutPage'
 import ResetPassword from './pages/ResetPassword'
-// 
+
 
 const App: React.FC = () => {
   const noNavbarRoutes = ['/login', '/signup', '/verifyOtp'];
@@ -40,7 +40,7 @@ const App: React.FC = () => {
               <Route path={USER.VERIFY} element={<ErrorBoundary><VerifyOtp /></ErrorBoundary>} />
               <Route path={USER.ALL_BLOG} element={<ErrorBoundary><AllBlogsv /></ErrorBoundary>} />
               <Route path={USER.FORGOT_PWDMAIL} element={<ResetPassword />} />
-
+              <Route path={USER.ABOUT_US} element={<ErrorBoundary><AboutPage /></ErrorBoundary>} />
 
             </Route>
 
@@ -49,7 +49,6 @@ const App: React.FC = () => {
               <Route path={USER.PROFILE} element={<ErrorBoundary><UserProfile /></ErrorBoundary>} />
               <Route path={USER.BLOGS} element={<ErrorBoundary><Blogs /></ErrorBoundary>} />
               <Route path={USER.CREATE_BLOG} element={<ErrorBoundary><CreateBlog /></ErrorBoundary>} />
-              <Route path={USER.ABOUT_US} element={<ErrorBoundary><AboutPage /></ErrorBoundary>} />
 
             </Route>
 
