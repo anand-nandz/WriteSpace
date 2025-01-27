@@ -28,6 +28,8 @@ export interface User {
     isActive: boolean;
     isGoogleUser: boolean;
     image?: string;
+    resetPasswordToken?: string;
+    resetPasswordExpires?: Date;
 
 }
 

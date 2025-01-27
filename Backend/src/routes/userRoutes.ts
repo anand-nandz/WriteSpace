@@ -24,6 +24,9 @@ router.post('/verifyOtp',userController.verifyOTP.bind(userController));
 
 router.post('/refresh-token',userController.create_RefreshToken.bind(userController))
 
+router.post('/forgot-password',userController.forgotPassword.bind(userController))
+router.post('/reset-password/:token',userController.changeForgotPassword.bind(userController))
+router.get('/validate-reset-token/:token',userController.validateResetToken.bind(userController))
 
 router.get('/profile',authenticateToken,userController.getUserProfile.bind(userController));
 router.put('/profile', upload.single("image"), authenticateToken, userController.updateProfile.bind(userController));
@@ -32,5 +35,6 @@ router.put('/edit-blog/:id', upload.array("images", 2), authenticateToken, userC
 router.get('/blogs',authenticateToken, userController.displayBlogs.bind(userController));
 router.patch('/blogs/:blogId/status',authenticateToken, userController.deleteBlog.bind(userController));
 router.get('/all-blogs', userController.displayAll.bind(userController));
+router.post('/ai-suggestion', userController.generateContent.bind(userController));
 
 export default router

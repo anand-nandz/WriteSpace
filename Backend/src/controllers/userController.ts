@@ -75,6 +75,8 @@ class UserController {
         }
     };
 
+    
+
     userLogin = async (req: Request, res: Response): Promise<void> => {
         try {
             const { email, password } = req.body;
@@ -119,6 +121,56 @@ class UserController {
 
         } catch (error) {
             handleError(res, error, 'CreateRefreshToken')
+        }
+    }
+
+    forgotPassword = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { email } = req.body
+
+            if (!email) {
+                throw new CustomError(Messages.Warning.EMAIL_REQUIRED, HTTP_statusCode.BadRequest);
+            }
+            await this.userService.handleForgotPassword(email)
+            res.status(HTTP_statusCode.OK).json({ message: Messages.Auth.PASSWORD_RESET_LINK});
+
+        } catch (error) {
+            handleError(res, error, 'forgotPassword')
+        }
+    }
+
+    changeForgotPassword = async (req: Request, res: Response): Promise<void> => {
+        const { token } = req.params;
+        const { password } = req.body;
+
+        try {
+            if (!token) {
+                throw new CustomError(Messages.Auth.SESSION_EXPIRED, HTTP_statusCode.BadRequest)
+            } else if (!password) {
+                throw new CustomError(Messages.Warning.PASSWORD_REQUIRED, HTTP_statusCode.BadRequest)
+            }
+
+            await this.userService.newPasswordChange(token, password)
+            res.status(HTTP_statusCode.OK).json({ message: Messages.Auth.PASSWORD_RESET_SUCCESS})
+
+        } catch (error) {
+            handleError(res, error, 'changePassword')
+        }
+    }
+
+    validateResetToken = async (req: Request, res: Response): Promise<void> => {
+        const { token } = req.params;
+        console.log(token);
+        
+        try {
+            if (!token) {
+                throw new CustomError(Messages.Warning.TOKEN_NOT_VALID, HTTP_statusCode.BadRequest);
+            }
+            const isValid = await this.userService.validateToken(token);
+            if (isValid) res.status(HTTP_statusCode.OK).json({ isValid });
+
+        } catch (error) {
+            res.status(HTTP_statusCode.BadRequest).json({ message: (error as Error).message });
         }
     }
 
@@ -204,7 +256,6 @@ class UserController {
     editBlog = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
         try {
             const blogId = req.params.id;
-            console.log(blogId);
             
             const blogData = req.body
             const files = Array.isArray(req.files) ? req.files : [];
@@ -303,6 +354,22 @@ class UserController {
             });
         } catch (error) {
             handleError(res, error, 'displayBlogs')
+        }
+    }
+
+    generateContent = async(req: AuthenticatedRequest, res: Response): Promise<void>=>{
+        try {
+            const data = req.body;
+            
+            const result = await this.userService.generatePrompt(data.prompt,data.category)  
+                  
+            res.status(HTTP_statusCode.OK).json({
+                success: true,
+                message: 'Data got',
+                suggestion: result 
+            });
+        } catch (error) {
+            handleError(res, error, 'generateContent')
         }
     }
 

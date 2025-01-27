@@ -23,7 +23,8 @@ const UserSchema = new Schema<UserDocument, UserModel>({
   isActive: { type: Boolean, default: true },
   image: { type: String },
   isGoogleUser: { type: Boolean, default: false },
-
+  resetPasswordToken: { type: String },
+  resetPasswordExpires: { type: Date },
 }, { timestamps: true });
 
 export default mongoose.model<UserDocument, UserModel>('User', UserSchema);
