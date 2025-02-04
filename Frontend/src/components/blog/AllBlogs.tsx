@@ -35,16 +35,13 @@ export default function AllBlogs() {
         }
       })
       const publishedBlogs = response.data.data.blogs
-      console.log(publishedBlogs, 'published');
-
       if (Array.isArray(publishedBlogs)) {
         setBlogs(publishedBlogs)
         if (publishedBlogs.length > 0) {
           const latestBlog = publishedBlogs[0];
-          console.log(latestBlog, 'Latest Blog (zeroth index)');
           dispatch(setLatestBlog(latestBlog));
         } else {
-          console.log("No blogs available to set as latest.");
+          console.error("No blogs available to set as latest.");
         }
       } else {
         console.error('Published posts is not an array:', publishedBlogs)

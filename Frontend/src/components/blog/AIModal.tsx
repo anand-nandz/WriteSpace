@@ -80,7 +80,6 @@ export default function AIModal({ isOpen, onClose, onAddContent }: AIModalProps)
     };
 
     const handlePromptSubmit = async () => {
-        setSelectedCategory(null)
         setAiSuggestion('');
         setIsLoading(false);
         if (!validatePrompt()) {
@@ -115,11 +114,11 @@ export default function AIModal({ isOpen, onClose, onAddContent }: AIModalProps)
             }
         } finally {
             setIsLoading(false)
+            setSelectedCategory(null)
         }
     };
 
     const handleCopyContent = (suggestion: string) => {
-        alert('copied')
         const data = extractTitleAndContent(suggestion);
 
         Promise.all([
@@ -137,6 +136,7 @@ export default function AIModal({ isOpen, onClose, onAddContent }: AIModalProps)
         if (onAddContent) {
             const data = extractTitleAndContent(suggestion);
             onAddContent(data.title, data.content);
+            showToastMessage('Content added', 'success');
             onClose();
         }
     };
